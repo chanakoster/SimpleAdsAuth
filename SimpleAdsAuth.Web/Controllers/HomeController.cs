@@ -49,13 +49,9 @@ namespace SimpleAdsAuth.Web.Controllers
             if (mgr.GetUserIdFromEmail(User.Identity.Name) == mgr.GetUserIdForAd(id))
             {
                 mgr.DeleteAd(id);
-                return RedirectToAction("Index");
             }
-            else
-            {
-                TempData["Message"] = "Error deleting ad";
-                return RedirectToAction("Index");
-            }
+
+            return RedirectToAction("Index");
         }
 
         [Authorize]
