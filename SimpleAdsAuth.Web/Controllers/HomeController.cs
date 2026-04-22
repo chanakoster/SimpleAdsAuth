@@ -46,9 +46,15 @@ namespace SimpleAdsAuth.Web.Controllers
         public IActionResult DeleteAd(int id)
         {
             var mgr = new AdsManager(_connectionString);
-            if (mgr.GetUserIdFromEmail(User.Identity.Name) == mgr.GetUserIdForAd(id))
+            int UserId = mgr.GetUserIdFromEmail(User.Identity.Name);
+            if (UserId == mgr.GetUserIdForAd(id))
             {
                 mgr.DeleteAd(id);
+            }
+
+            else
+            {
+                mgr.ReportUser(UserId, id);
             }
 
             return RedirectToAction("Index");

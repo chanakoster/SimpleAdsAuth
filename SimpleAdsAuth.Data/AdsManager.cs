@@ -56,6 +56,17 @@ namespace SimpleAdsAuth.Data
             }
         }
 
+        public void ReportUser(int userId, int adId)
+        {
+            using var conn = new SqlConnection(_connectionString);
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = "INSERT INTO AdDeletionAttempts (UserId, AdId, Date) VALUES (@userId, @adId, GETDATE())";
+            cmd.Parameters.AddWithValue("@userId", userId);
+            cmd.Parameters.AddWithValue("@adId", adId);
+            conn.Open();
+            cmd.ExecuteNonQuery();
+        }
+
         public void AddAd(Ad ad)
         {
             using var conn = new SqlConnection(_connectionString);
