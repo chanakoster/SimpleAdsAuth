@@ -57,11 +57,8 @@ namespace SimpleAdsAuth.Web.Controllers
 
             var claims = new List<Claim>()
             {
-                new Claim(ClaimTypes.Email, user.Email) //whatever we set here, is what will be available in User.Identity.Name
+                new Claim(ClaimTypes.Email, user.Email)
             };
-
-            //this code does the actual login - it tells MVC to set the auth cookie, and the 
-            //users email address will be "baked" into that cookie
 
             HttpContext.SignInAsync(new ClaimsPrincipal(
                     new ClaimsIdentity(claims, "Cookies", ClaimTypes.Email, "roles"))
