@@ -10,6 +10,5 @@ namespace SimpleAdsAuth.Data
     {
         public List<Ad> Ads { get; set; } = new List<Ad>();
         public int UserId { get; set; }
-        public int? AdId { get; set; }
     }
 }

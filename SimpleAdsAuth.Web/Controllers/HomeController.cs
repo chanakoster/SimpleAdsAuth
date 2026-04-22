@@ -12,7 +12,7 @@ namespace SimpleAdsAuth.Web.Controllers
         private string _connectionString
             = @"Data Source=.\sqlexpress;Initial Catalog=Ads;Integrated Security=true;Trust Server Certificate=true;";
 
-        public IActionResult Index(int? adId)
+        public IActionResult Index()
         {
             if (TempData["Message"] != null)
             {
@@ -23,21 +23,14 @@ namespace SimpleAdsAuth.Web.Controllers
             {
                 Ads = mgr.GetAds(),
                 UserId = User.Identity.IsAuthenticated ? mgr.GetUserIdFromEmail(User.Identity.Name) : 0,
-                AdId = adId.HasValue ? adId.Value : null
             };
             return View(vm);
         }
 
+        [Authorize]
         public IActionResult NewAd()
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                return View();
-            }
-            else
-            {
-                return RedirectToAction("login", "account");
-            }
+            return View();
         }
 
         [HttpPost]
@@ -60,8 +53,8 @@ namespace SimpleAdsAuth.Web.Controllers
             }
             else
             {
-                TempData["Message"] = "You don't have permission to delete this ad.";
-                return Redirect($"/home/Index?adid={id}");
+                TempData["Message"] = "Error deleting ad";
+                return RedirectToAction("Index");
             }
         }
 
