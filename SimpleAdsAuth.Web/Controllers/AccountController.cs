@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SimpleAdsAuth.Data;
 using System.Security.Claims;
@@ -22,8 +23,8 @@ namespace SimpleAdsAuth.Web.Controllers
         [HttpPost]
         public IActionResult Signup(User user)
         {
-            var mgr = new AdsManager(_connectionString);
-            bool userAddedSuccessfully = mgr.AddUser(user);
+            var repo = new AdsRepository(_connectionString);
+            bool userAddedSuccessfully = repo.AddUser(user);
             if (userAddedSuccessfully)
             {
                 return RedirectToAction("Login", "Account");
@@ -47,8 +48,8 @@ namespace SimpleAdsAuth.Web.Controllers
         [HttpPost]
         public IActionResult Login(User tempUser)
         {
-            var mgr = new AdsManager(_connectionString);
-            var user = mgr.Login(tempUser);
+            var repo = new AdsRepository(_connectionString);
+            var user = repo.Login(tempUser);
             if (user == null)
             {
                 TempData["Message"] = "Invalid Login";
@@ -67,6 +68,7 @@ namespace SimpleAdsAuth.Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        [Authorize]
         public IActionResult Signout()
         {
             HttpContext.SignOutAsync().Wait();

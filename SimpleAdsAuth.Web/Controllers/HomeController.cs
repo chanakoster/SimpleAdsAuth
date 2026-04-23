@@ -18,11 +18,11 @@ namespace SimpleAdsAuth.Web.Controllers
             {
                 ViewBag.Message = TempData["Message"];
             }
-            AdsManager mgr = new AdsManager(_connectionString);
-            AdsViewModel vm = new AdsViewModel()
+            var repo = new AdsRepository(_connectionString);
+            var vm = new AdsViewModel()
             {
-                Ads = mgr.GetAds(),
-                UserId = User.Identity.IsAuthenticated ? mgr.GetUserIdFromEmail(User.Identity.Name) : 0,
+                Ads = repo.GetAds(),
+                UserId = User.Identity.IsAuthenticated ? repo.GetUserIdFromEmail(User.Identity.Name) : 0,
             };
             return View(vm);
         }
@@ -33,28 +33,30 @@ namespace SimpleAdsAuth.Web.Controllers
             return View();
         }
 
+        [Authorize]
         [HttpPost]
         public IActionResult NewAd(Ad ad)
         {
-            var mgr = new AdsManager(_connectionString);
-            ad.User = new User { Id = mgr.GetUserIdFromEmail(User.Identity.Name) };
-            mgr.AddAd(ad);
+            var repo = new AdsRepository(_connectionString);
+            ad.User = new User { Id = repo.GetUserIdFromEmail(User.Identity.Name) };
+            repo.AddAd(ad);
             return RedirectToAction("Index");
         }
 
+        [Authorize]
         [HttpPost]
         public IActionResult DeleteAd(int id)
         {
-            var mgr = new AdsManager(_connectionString);
-            int UserId = mgr.GetUserIdFromEmail(User.Identity.Name);
-            if (UserId == mgr.GetUserIdForAd(id))
+            var repo = new AdsRepository(_connectionString);
+            int UserId = repo.GetUserIdFromEmail(User.Identity.Name);
+            if (UserId == repo.GetUserIdForAd(id))
             {
-                mgr.DeleteAd(id);
+                repo.DeleteAd(id);
             }
 
             else
             {
-                mgr.ReportUser(UserId, id);
+                repo.ReportUser(UserId, id);
             }
 
             return RedirectToAction("Index");
@@ -63,10 +65,10 @@ namespace SimpleAdsAuth.Web.Controllers
         [Authorize]
         public IActionResult MyAccount()
         {
-            AdsManager mgr = new AdsManager(_connectionString);
+            var repo = new AdsRepository(_connectionString);
             AdsViewModel vm = new AdsViewModel()
             {
-                Ads = mgr.GetAdsById(mgr.GetUserIdFromEmail(User.Identity.Name)),
+                Ads = repo.GetAdsById(repo.GetUserIdFromEmail(User.Identity.Name)),
             };
             return View(vm); ;
         }

@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace SimpleAdsAuth.Data
 {
-    public class AdsManager
+    public class AdsRepository
     {
         private string _connectionString;
 
-        public AdsManager(string connectionString)
+        public AdsRepository(string connectionString)
         {
             _connectionString = connectionString;
         }
